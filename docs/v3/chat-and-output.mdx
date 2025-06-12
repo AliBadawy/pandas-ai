@@ -49,6 +49,9 @@ Used when the result is a pandas DataFrame. This format preserves the tabular st
 ### Chart Response
 Handles visualization outputs, supporting various types of charts and plots generated during data analysis.
 
+### Plot Spec Response
+Returns a dictionary describing a chart (e.g., axes, labels, metadata) instead of an image file. Useful when you want to render plots yourself.
+
 ### String Response
 Returns textual responses, explanations, and insights about your data in a readable format.
 
@@ -72,6 +75,7 @@ response = df.chat("Who is the user with the highest age?") # Returns a String r
 response = df.chat("How many users in total?") # Returns a Number response
 response = df.chat("Show me the data") # Returns a DataFrame response
 response = df.chat("Plot the distribution") # Returns a Chart response
+plot_spec = df.chat("Plot spec only") # Returns a Plot Spec response
 ```
 
 ## Response Types Details
@@ -82,6 +86,7 @@ Each response type is designed to handle specific use cases:
 - **Number Response**: Returns numerical results from calculations
 - **DataFrame Response**: Preserves the structure and functionality of pandas DataFrames
 - **Chart Response**: Handles various visualization formats and plotting libraries
+- **Plot Spec Response**: Contains a JSON specification describing a chart
 - **Error Response**: Structured error handling with informative messages
 
 The response system is extensible and type-safe, ensuring that outputs are properly formatted and handled according to their specific requirements.

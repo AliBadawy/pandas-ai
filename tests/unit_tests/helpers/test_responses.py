@@ -8,6 +8,7 @@ from PIL import Image
 
 from pandasai.core.response import (
     ChartResponse,
+    PlotSpecResponse,
     DataFrameResponse,
     NumberResponse,
     StringResponse,
@@ -54,6 +55,13 @@ class TestResponseParser(unittest.TestCase):
         self.assertEqual(response.value, "path/to/plot.png")
         self.assertEqual(response.last_code_executed, None)
         self.assertEqual(response.type, "chart")
+
+    def test_parse_valid_plot_spec(self):
+        result = {"type": "plot_spec", "value": {"x": "age", "y": "salary"}}
+        response = self.response_parser.parse(result)
+        self.assertIsInstance(response, PlotSpecResponse)
+        self.assertEqual(response.value, {"x": "age", "y": "salary"})
+        self.assertEqual(response.type, "plot_spec")
 
     def test_plot_img_show_triggered(self):
         result = {
@@ -128,6 +136,15 @@ class TestResponseParser(unittest.TestCase):
 
     def test_validate_valid_plot_path(self):
         result = {"type": "plot", "value": "/valid/path/to/plot.png"}
+        self.assertTrue(self.response_parser._validate_response(result))
+
+    def test_validate_invalid_plot_spec_type(self):
+        result = {"type": "plot_spec", "value": "not a dict"}
+        with self.assertRaises(InvalidOutputValueMismatch):
+            self.response_parser._validate_response(result)
+
+    def test_validate_valid_plot_spec(self):
+        result = {"type": "plot_spec", "value": {"x": "age"}}
         self.assertTrue(self.response_parser._validate_response(result))
 
     @patch("pandasai.core.response.chart.Image.open")  # Mock the Image.open method

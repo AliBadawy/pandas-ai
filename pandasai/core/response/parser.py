@@ -7,6 +7,7 @@ from pandasai.exceptions import InvalidOutputValueMismatch
 
 from .base import BaseResponse
 from .chart import ChartResponse
+from .plot_spec import PlotSpecResponse
 from .dataframe import DataFrameResponse
 from .number import NumberResponse
 from .string import StringResponse
@@ -26,6 +27,8 @@ class ResponseParser:
             return DataFrameResponse(result["value"], last_code_executed)
         elif result["type"] == "plot":
             return ChartResponse(result["value"], last_code_executed)
+        elif result["type"] == "plot_spec":
+            return PlotSpecResponse(result["value"], last_code_executed)
         else:
             raise InvalidOutputValueMismatch(f"Invalid output type: {result['type']}")
 
@@ -55,15 +58,12 @@ class ResponseParser:
                 )
 
         elif result["type"] == "plot":
-            if not isinstance(result["value"], (str, dict)):
+            if not isinstance(result["value"], str):
                 raise InvalidOutputValueMismatch(
                     "Invalid output: Expected a plot save path str but received an incompatible type."
                 )
 
-            if isinstance(result["value"], dict) or (
-                isinstance(result["value"], str)
-                and "data:image/png;base64" in result["value"]
-            ):
+            if "data:image/png;base64" in result["value"]:
                 return True
 
             path_to_plot_pattern = r"^(\/[\w.-]+)+(/[\w.-]+)*$|^[^\s/]+(/[\w.-]+)*$"
@@ -71,5 +71,12 @@ class ResponseParser:
                 raise InvalidOutputValueMismatch(
                     "Invalid output: Expected a plot save path str but received an incompatible type."
                 )
+
+        elif result["type"] == "plot_spec":
+            if not isinstance(result["value"], dict):
+                raise InvalidOutputValueMismatch(
+                    "Invalid output: Expected a dictionary for result type 'plot_spec'."
+                )
+            return True
 
         return True

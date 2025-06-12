@@ -21,7 +21,7 @@ class TestGeneratePythonCodeWithSQLPrompt:
         [
             (
                 "",
-                """type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }""",
+                """type (possible values "string", "number", "dataframe", "plot", "plot_spec"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" } or { \"type\": \"plot_spec\", \"value\": {\"x\": \"age\"}}""",
             ),
             (
                 "number",
@@ -34,6 +34,10 @@ class TestGeneratePythonCodeWithSQLPrompt:
             (
                 "plot",
                 """type (must be "plot"), value must be string. Example: { "type": "plot", "value": "temp_chart.png" }""",
+            ),
+            (
+                "plot_spec",
+                """type (must be "plot_spec"), value must be dict describing the chart. Example: { "type": "plot_spec", "value": {"x": "age"} }""",
             ),
             (
                 "string",
