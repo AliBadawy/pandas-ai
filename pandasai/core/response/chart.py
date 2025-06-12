@@ -12,6 +12,9 @@ class ChartResponse(BaseResponse):
         super().__init__(value, "chart", last_code_executed)
 
     def _get_image(self) -> Image.Image:
+        if isinstance(self.value, dict):
+            raise ValueError("ChartResponse expects an image path or base64 string, not a dict")
+
         if not self.value.startswith("data:image"):
             return Image.open(self.value)
 
